@@ -1,5 +1,7 @@
 package making_changes;
 
+import java.util.Objects;
+
 public class Point {
     private double x;
     private double y;
@@ -23,6 +25,22 @@ public class Point {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Point point)) {
+            return false;
+        }
+        return Double.compare(getX(), point.getX()) == 0 && Double.compare(getY(), point.getY()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
     }
 
     @Override
