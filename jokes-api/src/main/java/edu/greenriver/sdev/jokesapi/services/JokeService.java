@@ -1,13 +1,20 @@
 package edu.greenriver.sdev.jokesapi.services;
 
 import edu.greenriver.sdev.jokesapi.model.Joke;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class JokeService {
+
+
+@Service
+public class JokeService
+{
+
+
     private List<Joke> jokes = new ArrayList<>(List.of(
             new Joke("What did Han Solo say to the waiter who recommended the haddock? Never sell me the cods!"),
             new Joke("Why didn’t any of Luke Skywalker’s marriages last? He always followed Obi-Wan’s advice: " +
@@ -20,39 +27,62 @@ public class JokeService {
             new Joke("Where did Luke get his cybernetic hand? The second hand store.")
     ));
 
-    public List<Joke> getAllJokes() {
+    //service layer
+    public List<Joke> getAllJokes()
+    {
         return jokes;
-    } // end of get all jokes method
+    }
 
-    public Joke getJokeById(int id) {
+    public Joke getJokeById(int id)
+    {
+
         // the filter() method receives a lambda method
         Optional<Joke> found = jokes.stream()
-                .filter(joke -> joke.getId() == id)
-                .findFirst();
-        return found.get();
-    } // end of get jokes id
+                .filter(joke -> joke.getId() == id).
+                findFirst();
+        return found.orElse(null);
 
 
-    public Joke random() {
+
+    }
+
+    public Joke random()
+    {
         Random random = new Random();
         return jokes.get(random.nextInt(jokes.size()));
     }
 
-    public void addJoke(Joke joke) {
-        jokes.add(joke);
+
+    public Joke addJoke(Joke joke)
+    {
+        joke.generateId(); // gen a new id for data
+        jokes.add(joke); //insert teh record
+
+
+        //TODO make sure our joke is returned with a new id
+        return joke;
+
     }
 
-    public void updateJoke(Joke updatedjoke) {
-        Joke saveJoke = getJokeById(updatedjoke.getId());
-        saveJoke.setJokeText(updatedjoke.getJokeText());
+    public Joke updateJoke(Joke updatedJoke)
+    {
+        Joke savedJoke = getJokeById(updatedJoke.getId());
+        savedJoke.setJokeText(updatedJoke.getJokeText());
+
+        return savedJoke;
     }
 
-    public void deleteJoke(int id) {
-        for (int i = 0; i < jokes.size(); i++) {
-            if(jokes.get(i).getId() == id) {
+    public void deleteJoke(int id)
+    {
+        for(int i = 0; i < jokes.size(); i++)
+        {
+            if (jokes.get(i).getId() == id)
+            {
                 jokes.remove(i);
                 break;
             }
         }
     }
-} // end of joke service class
+
+
+}

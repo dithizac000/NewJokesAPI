@@ -7,17 +7,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class Joke {
+public class Joke
+{
     private static int classIds = 0;
 
     private int id;
     private String jokeText;
 
-    public Joke(String jokeText) {
-        id = classIds;
-        classIds++;
+    public Joke(String jokeText)
+    {
+        generateId();
+
         this.jokeText = jokeText;
     }
-}
 
+    public void generateId() {
+        id = classIds;
+        classIds++;
+    }
+}

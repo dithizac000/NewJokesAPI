@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 public class WeatherApi {
-
+    // this field is assigned using dependency injection
     private WeatherService service;
 
     public WeatherApi(WeatherService service) {
