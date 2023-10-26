@@ -2,56 +2,75 @@ package edu.greenriver.sdev.jokesapi.controllers;
 
 import edu.greenriver.sdev.jokesapi.model.Joke;
 import edu.greenriver.sdev.jokesapi.services.JokeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-//don't forget this.
 @RestController
 public class JokesApi
 {
     private JokeService service;
 
-
-    public JokesApi(JokeService service) {
+    public JokesApi(JokeService service)
+    {
         this.service = service;
     }
 
-    @GetMapping("jokes")
-    public List<Joke> allJokes()
+    @GetMapping("jokes") //http://localhost:8080/jokes
+    public ResponseEntity<List<Joke>> allJokes()
     {
-        return service.getAllJokes();
-    }
-    @GetMapping("jokes/random")
-    public Joke random()
-    {
-        return service.random();
+        return new ResponseEntity<>(service.getAllJokes(), HttpStatus.OK); //200
     }
 
-    //id
-    @GetMapping("jokes/{jokeId}")  //localhost:8080/jokes/3
-    public Joke getJokeById(@PathVariable int jokeId)
+    @GetMapping("jokes/random")
+    public ResponseEntity<Joke> random()
     {
-        return service.getJokeById(jokeId);
+        return new ResponseEntity<>(service.random(), HttpStatus.OK); //200
+    }
+
+    @GetMapping("jokes/{jokeId}") //http://localhost:8080/jokes/3
+    public ResponseEntity<Joke> getJokeById(@PathVariable int jokeId)
+    {
+        return new ResponseEntity<>(service.getJokeById(jokeId), HttpStatus.OK); //200
     }
 
     //pass in a new Joke object through the request body
     @PostMapping("jokes")
-    public Joke addJoke(@RequestBody Joke joke)
+    public ResponseEntity<Joke> addJoke(@RequestBody Joke joke)
     {
+        return new ResponseEntity<>(service.addJoke(joke), HttpStatus.CREATED); //201
+    }
 
-        return service.addJoke(joke);
+    //http://localhost:8080/jokes/query?author=josh&text=hello,world!
+    @PostMapping("jokes/query")
+    public ResponseEntity<Joke> addJoke(@RequestParam String author, @RequestParam String text)
+    {
+        Joke newJoke = new Joke(author + ": " + text);
+        return new ResponseEntity<>(service.addJoke(newJoke), HttpStatus.CREATED); //201
     }
 
     @PutMapping("jokes")
-    public Joke editJoke(@RequestBody Joke joke) {
-        return service.updateJoke(joke);
+    public ResponseEntity<Joke> editJoke(@RequestBody Joke joke)
+    {
+        if (!service.jokeExistsById(joke.getId()))
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(service.updateJoke(joke), HttpStatus.OK); //200
     }
 
     @DeleteMapping("jokes")
-    public void deleteJoke(@RequestBody Joke joke) {
-        service.deleteJoke(joke.getId());
-    }
+    public ResponseEntity deleteJoke(@RequestBody Joke joke)
+    {
+        if (!service.jokeExistsById(joke.getId()))
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+        service.deleteJoke(joke.getId());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

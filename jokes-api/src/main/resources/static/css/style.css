@@ -1,0 +1,24 @@
+/*create a fixed layout*/
+html {
+    width: 960px;
+    margin: auto;
+    background-color: lightblue;
+}
+
+div#jokes-list {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+section {
+    backgorund-color: purple;
+    border: 2px solid darkblue;
+    padding: 8px;
+    margin: 10px;
+    border-radius: 5px;
+
+}
+
+secion h2 {
+    font-size: 1.2em;
+}
